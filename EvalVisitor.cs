@@ -5,6 +5,7 @@ using System;
 using Antlr4.Runtime.Misc;
 using static SimpleLanguageParser;
 using Antlr4.Runtime.Tree;
+using System.Linq;
 
 public class EvalVisitor : SimpleLanguageBaseVisitor<Value>
 {
@@ -14,21 +15,30 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value>
 
     // store variables (there's only one global scope!)
     private Dictionary<String, Value> memory = new Dictionary<String, Value>();
+    private static ReturnValue returnValue = new ReturnValue();
+    private Scope scope;
+    private Dictionary<String, MyFunction> functions;
 
+   public EvalVisitor(Scope scope, Dictionary<String, MyFunction> functions)
+    {
+        this.scope = scope;
+        this.functions = new Dictionary<string, MyFunction>();
+    }
     // assignment/id overrides
 
-   
-    public override Value VisitFunctionDecl(FunctionDeclContext ctx) {
+
+    public override Value VisitFunctionDecl(FunctionDeclContext ctx)
+    {
         var data = ctx.idList() != null ? ctx.idList().ID() : new List<ITerminalNode>().ToArray();
         var block = ctx.block();
         String id = ctx.ID().GetText() + data.Length.ToString();
         // TODO: throw exception if function is already defined?
-       // functions.put(id, new Function(scope, params, block));
+        functions.Add(id, new MyFunction(scope, data.ToList(), block));
         return Value.VOID;
     }
-    
+
     // list: '[' exprList? ']'
-    
+
     public override Value VisitAssignment(SimpleLanguageParser.AssignmentContext ctx)
     {
         String id = ctx.ID().GetText();
@@ -63,7 +73,7 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value>
     {
         String str = ctx.GetText();
         // strip quotes
-        str = str.Substring(1, str.Length - 1).Replace("\"","");
+        str = str.Substring(1, str.Length - 1).Replace("\"", "");
         return new Value(str);
     }
 
