@@ -48,7 +48,7 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value>
     {
         String str = ctx.GetText();
         // strip quotes
-        str = str.Substring(1, str.Length - 1).Replace("\"\"", "\"");
+        str = str.Substring(1, str.Length - 1).Replace("\"","");
         return new Value(str);
     }
 
