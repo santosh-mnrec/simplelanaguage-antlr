@@ -2,7 +2,7 @@ n = 9;
 log "Print Odd and Even";
 
 def list()
-  return [7,8,9];
+  return [7,8,9]
 end
 
 while n > 0 {
