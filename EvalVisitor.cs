@@ -14,6 +14,11 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value>
 
     // assignment/id overrides
 
+    public override Value VisitFunction([NotNull] SimpleLanguageParser.FunctionContext context)
+    {
+        var a=10;
+        return base.VisitFunction(context);
+    }
     public override Value VisitAssignment(SimpleLanguageParser.AssignmentContext ctx)
     {
         String id = ctx.ID().GetText();
