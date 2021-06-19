@@ -1,11 +1,9 @@
 n = 9;
 log "Print Odd and Even";
-a=10;
-b=20;
-function a(a,b) {
 
-
-}
+def list()
+  return [7,8,9];
+end
 
 while n > 0 {
 

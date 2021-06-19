@@ -59,6 +59,58 @@ public partial class SimpleLanguageBaseListener : ISimpleLanguageListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBlock([NotNull] SimpleLanguageParser.BlockContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by the <c>identifierFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIdentifierFunctionCall([NotNull] SimpleLanguageParser.IdentifierFunctionCallContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>identifierFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIdentifierFunctionCall([NotNull] SimpleLanguageParser.IdentifierFunctionCallContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>logFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLogFunctionCall([NotNull] SimpleLanguageParser.LogFunctionCallContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>logFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLogFunctionCall([NotNull] SimpleLanguageParser.LogFunctionCallContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SimpleLanguageParser.functionDecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFunctionDecl([NotNull] SimpleLanguageParser.FunctionDeclContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SimpleLanguageParser.functionDecl"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFunctionDecl([NotNull] SimpleLanguageParser.FunctionDeclContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SimpleLanguageParser.idList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIdList([NotNull] SimpleLanguageParser.IdListContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SimpleLanguageParser.idList"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIdList([NotNull] SimpleLanguageParser.IdListContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="SimpleLanguageParser.stat"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

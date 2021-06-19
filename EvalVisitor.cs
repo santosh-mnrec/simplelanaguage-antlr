@@ -3,6 +3,9 @@ using Antlr4.Runtime;
 using System.Collections.Generic;
 using System;
 using Antlr4.Runtime.Misc;
+using static SimpleLanguageParser;
+using Antlr4.Runtime.Tree;
+
 public class EvalVisitor : SimpleLanguageBaseVisitor<Value>
 {
 
@@ -14,11 +17,18 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value>
 
     // assignment/id overrides
 
-    public override Value VisitFunction([NotNull] SimpleLanguageParser.FunctionContext context)
-    {
-        var a=10;
-        return base.VisitFunction(context);
+   
+    public override Value VisitFunctionDecl(FunctionDeclContext ctx) {
+        var data = ctx.idList() != null ? ctx.idList().ID() : new List<ITerminalNode>().ToArray();
+        var block = ctx.block();
+        String id = ctx.ID().GetText() + data.Length.ToString();
+        // TODO: throw exception if function is already defined?
+       // functions.put(id, new Function(scope, params, block));
+        return Value.VOID;
     }
+    
+    // list: '[' exprList? ']'
+    
     public override Value VisitAssignment(SimpleLanguageParser.AssignmentContext ctx)
     {
         String id = ctx.ID().GetText();

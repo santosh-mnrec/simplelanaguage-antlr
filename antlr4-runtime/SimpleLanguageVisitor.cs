@@ -44,6 +44,32 @@ public interface ISimpleLanguageVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBlock([NotNull] SimpleLanguageParser.BlockContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>identifierFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdentifierFunctionCall([NotNull] SimpleLanguageParser.IdentifierFunctionCallContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>logFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLogFunctionCall([NotNull] SimpleLanguageParser.LogFunctionCallContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SimpleLanguageParser.functionDecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunctionDecl([NotNull] SimpleLanguageParser.FunctionDeclContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="SimpleLanguageParser.idList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdList([NotNull] SimpleLanguageParser.IdListContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="SimpleLanguageParser.stat"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

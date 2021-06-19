@@ -51,6 +51,50 @@ public interface ISimpleLanguageListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitBlock([NotNull] SimpleLanguageParser.BlockContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>identifierFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdentifierFunctionCall([NotNull] SimpleLanguageParser.IdentifierFunctionCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>identifierFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdentifierFunctionCall([NotNull] SimpleLanguageParser.IdentifierFunctionCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>logFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLogFunctionCall([NotNull] SimpleLanguageParser.LogFunctionCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>logFunctionCall</c>
+	/// labeled alternative in <see cref="SimpleLanguageParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLogFunctionCall([NotNull] SimpleLanguageParser.LogFunctionCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SimpleLanguageParser.functionDecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunctionDecl([NotNull] SimpleLanguageParser.FunctionDeclContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SimpleLanguageParser.functionDecl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunctionDecl([NotNull] SimpleLanguageParser.FunctionDeclContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="SimpleLanguageParser.idList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIdList([NotNull] SimpleLanguageParser.IdListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="SimpleLanguageParser.idList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIdList([NotNull] SimpleLanguageParser.IdListContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="SimpleLanguageParser.stat"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
