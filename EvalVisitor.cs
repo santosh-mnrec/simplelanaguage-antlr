@@ -3,28 +3,40 @@ using Antlr4.Runtime;
 using System.Collections.Generic;
 using System;
 using Antlr4.Runtime.Misc;
-public class EvalVisitor : SimpleLanguageBaseVisitor<Value> {
+public class EvalVisitor : SimpleLanguageBaseVisitor<Value>
+{
 
     // used to compare floating point numbers
-    public static  double SMALL_VALUE = 0.00000000001;
+    public static double SMALL_VALUE = 0.00000000001;
 
     // store variables (there's only one global scope!)
     private Dictionary<String, Value> memory = new Dictionary<String, Value>();
 
     // assignment/id overrides
-   
-    public override Value VisitAssignment(SimpleLanguageParser.AssignmentContext ctx) {
+
+    public override Value VisitAssignment(SimpleLanguageParser.AssignmentContext ctx)
+    {
         String id = ctx.ID().GetText();
         Value value = this.Visit(ctx.expr());
-         memory.TryAdd(id, value);
-         return value;
+        var exists = memory.TryGetValue(id, out var value2);
+        if (exists)
+        {
+            memory[id] = value;
+        }
+        else
+        {
+            memory.Add(id, value);
+        }
+        return value;
     }
 
-  
-    public override Value VisitIdAtom(SimpleLanguageParser.IdAtomContext ctx) {
+
+    public override Value VisitIdAtom(SimpleLanguageParser.IdAtomContext ctx)
+    {
         String id = ctx.GetText();
-        memory.TryGetValue(id,out var value);
-        if(value == null) {
+        memory.TryGetValue(id, out var value);
+        if (value == null)
+        {
             throw new Exception("no such variable: " + id);
         }
         return value;
@@ -32,60 +44,70 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value> {
 
     // atom overrides
 
-    public override Value VisitStringAtom(SimpleLanguageParser.StringAtomContext ctx) {
+    public override Value VisitStringAtom(SimpleLanguageParser.StringAtomContext ctx)
+    {
         String str = ctx.GetText();
         // strip quotes
         str = str.Substring(1, str.Length - 1).Replace("\"\"", "\"");
         return new Value(str);
     }
 
-   
-    public override Value VisitNumberAtom(SimpleLanguageParser.NumberAtomContext ctx) {
+
+    public override Value VisitNumberAtom(SimpleLanguageParser.NumberAtomContext ctx)
+    {
         return new Value(Double.Parse(ctx.GetText()));
     }
 
-  
-    public override Value VisitBooleanAtom(SimpleLanguageParser.BooleanAtomContext ctx) {
+
+    public override Value VisitBooleanAtom(SimpleLanguageParser.BooleanAtomContext ctx)
+    {
         return new Value(Boolean.Parse(ctx.GetText()));
     }
 
-   
-    public  override Value VisitNilAtom(SimpleLanguageParser.NilAtomContext ctx) {
+
+    public override Value VisitNilAtom(SimpleLanguageParser.NilAtomContext ctx)
+    {
         return new Value(null);
     }
 
     // expr overrides
-  
-    public  override Value VisitParExpr(SimpleLanguageParser.ParExprContext ctx) {
+
+    public override Value VisitParExpr(SimpleLanguageParser.ParExprContext ctx)
+    {
         return this.Visit(ctx.expr());
     }
 
-  
-    public  override Value VisitPowExpr(SimpleLanguageParser.PowExprContext ctx) {
+
+    public override Value VisitPowExpr(SimpleLanguageParser.PowExprContext ctx)
+    {
         Value left = this.Visit(ctx.expr(0));
         Value right = this.Visit(ctx.expr(1));
         return new Value(Math.Pow(left.asDouble(), right.asDouble()));
     }
 
-   
-    public override Value VisitUnaryMinusExpr(SimpleLanguageParser.UnaryMinusExprContext ctx) {
+
+    public override Value VisitUnaryMinusExpr(SimpleLanguageParser.UnaryMinusExprContext ctx)
+    {
         Value value = this.Visit(ctx.expr());
         return new Value(-value.asDouble());
     }
 
-  
-    public override Value VisitNotExpr(SimpleLanguageParser.NotExprContext ctx) {
+
+    public override Value VisitNotExpr(SimpleLanguageParser.NotExprContext ctx)
+    {
         Value value = this.Visit(ctx.expr());
         return new Value(!value.asBoolean());
     }
 
-   
-    public override Value VisitMultiplicationExpr(@SimpleLanguageParser.MultiplicationExprContext ctx) {
+
+    public override Value VisitMultiplicationExpr(@SimpleLanguageParser.MultiplicationExprContext ctx)
+    {
 
         Value left = this.Visit(ctx.expr(0));
         Value right = this.Visit(ctx.expr(1));
 
-       switch (ctx.op.Text) {
+        switch (ctx.op.Text)
+        {
             case "*":
                 return new Value(left.asDouble() * right.asDouble());
             case "/":
@@ -98,12 +120,14 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value> {
     }
 
 
-    public override Value VisitAdditiveExpr( SimpleLanguageParser.AdditiveExprContext ctx) {
+    public override Value VisitAdditiveExpr(SimpleLanguageParser.AdditiveExprContext ctx)
+    {
 
         Value left = this.Visit(ctx.expr(0));
         Value right = this.Visit(ctx.expr(1));
 
-        switch (ctx.op.Text) {
+        switch (ctx.op.Text)
+        {
             case "+":
                 return left.isDouble() && right.isDouble() ?
                         new Value(left.asDouble() + right.asDouble()) :
@@ -116,12 +140,14 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value> {
     }
 
 
-    public override Value VisitRelationalExpr(SimpleLanguageParser.RelationalExprContext ctx) {
+    public override Value VisitRelationalExpr(SimpleLanguageParser.RelationalExprContext ctx)
+    {
 
         Value left = this.Visit(ctx.expr(0));
         Value right = this.Visit(ctx.expr(1));
 
-        switch (ctx.op.Text) {
+        switch (ctx.op.Text)
+        {
             case "<":
                 return new Value(left.asDouble() < right.asDouble());
             case "<=":
@@ -135,14 +161,16 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value> {
         }
     }
 
-  
-    public override Value VisitEqualityExpr( SimpleLanguageParser.EqualityExprContext ctx) {
+
+    public override Value VisitEqualityExpr(SimpleLanguageParser.EqualityExprContext ctx)
+    {
 
         Value left = this.Visit(ctx.expr(0));
         Value right = this.Visit(ctx.expr(1));
 
-        switch (ctx.op.Text) {
-            case "=":
+        switch (ctx.op.Text)
+        {
+            case "==":
                 return left.isDouble() && right.isDouble() ?
                         new Value(Math.Abs(left.asDouble() - right.asDouble()) < SMALL_VALUE) :
                         new Value(left.Equals(right));
@@ -151,45 +179,51 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value> {
                         new Value(Math.Abs(left.asDouble() - right.asDouble()) >= SMALL_VALUE) :
                         new Value(!left.Equals(right));
             default:
-                throw new Exception("unknown operator: " );
+                throw new Exception("unknown operator: ");
         }
     }
 
- 
-    public override Value VisitAndExpr(SimpleLanguageParser.AndExprContext ctx) {
+
+    public override Value VisitAndExpr(SimpleLanguageParser.AndExprContext ctx)
+    {
         Value left = this.Visit(ctx.expr(0));
         Value right = this.Visit(ctx.expr(1));
         return new Value(left.asBoolean() && right.asBoolean());
     }
 
-    
-    public override Value VisitOrExpr(SimpleLanguageParser.OrExprContext ctx) {
+
+    public override Value VisitOrExpr(SimpleLanguageParser.OrExprContext ctx)
+    {
         Value left = this.Visit(ctx.expr(0));
         Value right = this.Visit(ctx.expr(1));
         return new Value(left.asBoolean() || right.asBoolean());
     }
 
     // log override
-  
-    public override Value VisitLog(SimpleLanguageParser.LogContext ctx) {
+
+    public override Value VisitLog(SimpleLanguageParser.LogContext ctx)
+    {
         Value value = this.Visit(ctx.expr());
-       System.Console.WriteLine(value.ToString());
+        System.Console.WriteLine(value.ToString());
         return value;
     }
 
     // if override
-  
-    public override Value VisitIf_stat(SimpleLanguageParser.If_statContext ctx) {
 
-        var conditions =  ctx.condition_block();
+    public override Value VisitIf_stat(SimpleLanguageParser.If_statContext ctx)
+    {
+
+        var conditions = ctx.condition_block();
 
         var evaluatedBlock = false;
 
-        foreach(SimpleLanguageParser.Condition_blockContext condition in conditions) {
+        foreach (SimpleLanguageParser.Condition_blockContext condition in conditions)
+        {
 
             Value evaluated = this.Visit(condition.expr());
 
-            if(evaluated.asBoolean()) {
+            if (evaluated.asBoolean())
+            {
                 evaluatedBlock = true;
                 // evaluate this block whose expr==true
                 this.Visit(condition.stat_block());
@@ -197,7 +231,8 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value> {
             }
         }
 
-        if(!evaluatedBlock && ctx.stat_block() != null) {
+        if (!evaluatedBlock && ctx.stat_block() != null)
+        {
             // evaluate the else-stat_block (if present == not null)
             this.Visit(ctx.stat_block());
         }
@@ -207,11 +242,13 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value> {
 
     // while override
 
-    public override Value VisitWhile_stat(SimpleLanguageParser.While_statContext ctx) {
+    public override Value VisitWhile_stat(SimpleLanguageParser.While_statContext ctx)
+    {
 
         Value value = this.Visit(ctx.expr());
 
-        while(value.asBoolean()) {
+        while (value.asBoolean())
+        {
 
             // evaluate the code block
             this.Visit(ctx.stat_block());
@@ -224,62 +261,69 @@ public class EvalVisitor : SimpleLanguageBaseVisitor<Value> {
     }
 }
 
-public class Value {
-    
+public class Value
+{
+
     public static Value VOID = new Value(new Object());
-    
+
     Object value;
-    
-    public Value(Object v) {
+
+    public Value(Object v)
+    {
         value = v;
     }
-    
-    public Boolean asBoolean() {
+
+    public Boolean asBoolean()
+    {
         return ((Boolean)(this.value));
     }
-    
-    public Double asDouble() {
+
+    public Double asDouble()
+    {
         return ((Double)(this.value));
     }
-    
-    public String asString() {
+
+    public String asString()
+    {
         return new String(this.value.ToString());
     }
-    
-    public bool isDouble() {
+
+    public bool isDouble()
+    {
         return (this.value is Double);
     }
-   
-    public override bool Equals(object obj)
+
+    public override bool Equals(object o)
     {
-        //
-        // See the full list of guidelines at
-        //   http://go.microsoft.com/fwlink/?LinkID=85237
-        // and also the guidance for operator== at
-        //   http://go.microsoft.com/fwlink/?LinkId=85238
-        //
-        
-        if (obj == null || GetType() != obj.GetType())
+        if (value == o)
+        {
+            return true;
+        }
+
+        if (value == null || o == null || o.GetType() != value.GetType())
         {
             return false;
         }
-        
-        // TODO: write your implementation of Equals() here
-      
-        return base.Equals (obj);
+
+        Value that = (Value)o;
+
+        return this.value.Equals(that.value);
     }
     public override string ToString()
     {
-       return value.ToString();
+        return value.ToString();
     }
     // override object.GetHashCode
     public override int GetHashCode()
     {
-        // TODO: write your implementation of GetHashCode() here
-       
-        return base.GetHashCode();
+        if (value == null)
+        {
+            return 0;
+        }
+
+        return this.value.GetHashCode();
     }
-   
-    
-  
+
+
+
 }
